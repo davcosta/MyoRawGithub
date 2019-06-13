@@ -1,0 +1,2 @@
+Classifier: RandomTree options: -K 0 -M 1.0 -V 0.001 -S 1 Window size: 128 Overlap: 0 Wamp threshold value 0, 11.811023622047244%
+Classifier: RandomTree options: -K 0 -M 1.0 -V 0.001 -S 1 Window size: 128 Overlap: 0 Wamp threshold value 1, 11.811023622047244%

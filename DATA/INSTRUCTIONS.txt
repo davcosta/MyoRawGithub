@@ -1,0 +1,10 @@
+INSTRUCTIONS
+- Install WEKA latest version: https://www.cs.waikato.ac.nz/ml/weka/downloading.html
+- Create New project
+- Build Path -> Configure Build Path -> Libraries -> Add External jar -> Weka.jar
+- Build Path -> Configure Build Path -> Order and Export -> check Weka
+- Build Path -> Configure Build Path -> Libraries -> Add jar -> guava-12.0.jar
+- Build Path -> Configure Build Path -> Order and Export -> check guava-12.0.jar
+- Build Path -> Configure Build Path -> Libraries -> Add jar -> commons.Math3-3.5.jar
+- Build Path -> Configure Build Path -> Order and Export -> check commons.Math3-3.5.jar
+

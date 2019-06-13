@@ -1,0 +1,254 @@
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+ JTextArea displayArea;
+    JTextField typingArea;
+
+extends JFrame implements KeyListener, ActionListener 
+    
+    
+    //SERVER STUFF
+    protected void createSocketServer()
+    {
+    	new Thread(new Runnable(){
+			public void run(){ 
+		try{
+			
+		//create the socket server object
+		middleman = new ServerSocket(port);
+        //keep listens indefinitely until receives 'exit' call or program terminates
+        while(true){
+            //System.out.println("Waiting for client request");
+            //creating socket and waiting for client connection
+            Socket socket = middleman.accept();
+            //System.out.println("connected...");
+            //read from socket to ObjectInputStream object
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            //convert ObjectInputStream object to String
+            while (!reader.ready());
+            
+            String message = (String) reader.readLine();
+            //System.out.println("Message Received: " + message + "size "+reader.readLine().length());
+            //create ObjectOutputStream object
+            //System.out.println("message: "+message);
+            saveToFile(message);
+            reader.close();
+           
+            socket.close();
+            //terminate the server if client sends exit request
+            if(message.equalsIgnoreCase("exit")) break;
+        }
+        System.out.println("Shutting down Socket server!!");
+        //close the ServerSocket object
+        middleman.close();
+				
+		}catch(Exception e)
+		{
+			//handle this shit
+			e.printStackTrace();
+		}
+			}}).start();
+    }
+	
+    private void saveToFile(String message)
+    {
+    	try{
+    		log.logData(message+","+gestureID);
+    		log.closeFile();
+    	}catch(Exception e)
+    	{
+    		displayArea.append("error "+e);
+            displayArea.setCaretPosition(displayArea.getDocument().getLength());
+    	}
+    	
+    	
+    }
+    
+    
+    //KEY EVENTS STUFF
+    /** Handle the key typed event from the text field. */
+    public void keyTyped(KeyEvent e) {
+    	 displayInfo(e, "KEY TYPED: ");
+    }
+
+    /** Handle the key-pressed event from the text field. */
+    public void keyPressed(KeyEvent e) {
+    	 displayInfo(e, "KEY PRESSED: ");
+    }
+
+    /** Handle the key-released event from the text field. */
+    public void keyReleased(KeyEvent e) {
+    	 displayInfo(e, "KEY RELEASED: ");
+    }
+	
+    
+    /*
+     * We have to jump through some hoops to avoid
+     * trying to print non-printing characters
+     * such as Shift.  (Not only do they not print,
+     * but if you put them in a String, the characters
+     * afterward won't show up in the text area.)
+     */
+    private void displayInfo(KeyEvent e, String keyStatus){
+         
+        //You should only rely on the key char if the event
+        //is a key typed event.
+        int id = e.getID();
+        String keyString;
+        int keyCode = e.getKeyCode();
+        keyString = "key code = " + keyCode
+                + " ("
+                + KeyEvent.getKeyText(keyCode)
+                + ")";
+        if(id == KeyEvent.KEY_PRESSED)
+        {
+        	
+
+        	switch(e.getKeyCode())
+        	{
+        	case 49: gestureID = 1;break;//TODO
+        	case 50: gestureID = 2;break;//TODO
+        	case 51: gestureID = 3;break;//TODO
+        	case 52: gestureID = 4;break;//TODO
+        	case 53: gestureID = 5;break;//TODO
+        	case 54: gestureID = 6;break;//TODO
+        	case 55: gestureID = 7;break;//TODO
+        	case 56: gestureID = 8;break;//TODO
+        	case 57: createSocketServer();break;//TODO
+        	case 58: gestureID = 10;break;//TODO
+        	case 59: break;//TODO
+        	default: gestureID = 0; counter =0;break;
+        	}
+        }else if(id == KeyEvent.KEY_RELEASED)
+        {
+        	gestureID = 0;
+        	switch(e.getKeyCode())
+        	{
+        	case 49: counter++;System.out.println(counter);break;//TODO17072
+        	case 50: counter++;System.out.println(counter);break;//TODO
+        	case 51: counter++;System.out.println(counter);break;//TODO
+        	case 52: counter++;System.out.println(counter);break;//TODO
+        	case 53: counter++;System.out.println(counter);break;//TODO
+        	case 54: counter++;System.out.println(counter);break;//TODO
+        	case 55: counter++;System.out.println(counter);break;//TODO
+        	case 56: counter++;System.out.println(counter);break;//TODO
+        	case 58: gestureID = 10;break;//TODO
+        	case 59: break;//TODO
+        	default: gestureID = 0; counter =0;break;
+        	}
+        }
+        
+        int modifiersEx = e.getModifiersEx();
+        String modString = "extended modifiers = " + modifiersEx;
+        String tmpString = KeyEvent.getModifiersExText(modifiersEx);
+        if (tmpString.length() > 0) {
+            modString += " (" + tmpString + ")";
+        } else {
+            modString += " (no extended modifiers)";
+        }
+         
+        String actionString = "action key? ";
+        if (e.isActionKey()) {
+            actionString += "YES";
+        } else {
+            actionString += "NO";
+        }
+         
+        String locationString = "key location: ";
+        int location = e.getKeyLocation();
+        if (location == KeyEvent.KEY_LOCATION_STANDARD) {
+            locationString += "standard";
+        } else if (location == KeyEvent.KEY_LOCATION_LEFT) {
+            locationString += "left";
+        } else if (location == KeyEvent.KEY_LOCATION_RIGHT) {
+            locationString += "right";
+        } else if (location == KeyEvent.KEY_LOCATION_NUMPAD) {
+            locationString += "numpad";
+        } else { // (location == KeyEvent.KEY_LOCATION_UNKNOWN)
+            locationString += "unknown";
+        }
+         
+        displayArea.append(keyStatus + newline
+                + "    " + keyString + newline
+                + "    " + modString + newline
+                + "    " + actionString + newline
+                + "    " + locationString + newline);
+        displayArea.setCaretPosition(displayArea.getDocument().getLength());
+    }
+    
+/**
+ * Create the GUI and show it.  For thread safety,
+ * this method should be invoked from the
+ * event-dispatching thread.
+ */
+private static void createAndShowGUI() {
+    //Create and set up the window.
+    main frame = new main("KeyEventDemo");
+    
+   
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    //Set up the content pane.
+    frame.addComponentsToPane();
+     
+     
+    //Display the window.
+    frame.pack();
+    frame.setVisible(true);
+    
+ 
+}
+ 
+private void addComponentsToPane() {
+     
+    JButton button = new JButton("Clear");
+    button.addActionListener(this);
+     
+    typingArea = new JTextField(20);
+    typingArea.addKeyListener(this);
+     
+    //Uncomment this if you wish to turn off focus
+    //traversal.  The focus subsystem consumes
+    //focus traversal keys, such as Tab and Shift Tab.
+    //If you uncomment the following line of code, this
+    //disables focus traversal and the Tab events will
+    //become available to the key event listener.
+    //typingArea.setFocusTraversalKeysEnabled(false);
+     
+    displayArea = new JTextArea();
+    displayArea.setEditable(false);
+    JScrollPane scrollPane = new JScrollPane(displayArea);
+    scrollPane.setPreferredSize(new Dimension(375, 125));
+     
+    getContentPane().add(typingArea, BorderLayout.PAGE_START);
+    getContentPane().add(scrollPane, BorderLayout.CENTER);
+    getContentPane().add(button, BorderLayout.PAGE_END);
+}
+/** Handle the button click. */
+public void actionPerformed(ActionEvent e) {
+    //Clear the text components.
+    displayArea.setText("");
+    typingArea.setText("");
+     
+    //Return the focus to the typing area.
+    typingArea.requestFocusInWindow();
+}

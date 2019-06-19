@@ -76,7 +76,8 @@ public class main extends JFrame implements KeyListener, ActionListener {
     	new Thread(new Runnable(){
 			public void run(){ 
 		try{
-			loadClassifier(Classify.RANDOMFOREST, DataClassification.FREQUENCY_1000HZ, 512, 18, 6,6);
+//			loadClassifier(Classify.RANDOMFOREST, DataClassification.FREQUENCY_1000HZ, 512, 18, 6,6);
+			loadClassifier(Classify.RANDOMFOREST, DataClassification.FREQUENCY_1000HZ, 256, 33, 6,6);
 		//create the socket server object
 		middleman = new ServerSocket(port);
         //keep listens indefinitely until receives 'exit' call or program terminates
@@ -843,7 +844,7 @@ public main(String name) {
         
 		//test.runConfigs();
         
-		//test.runSpecificConfig(RANDOMFOREST, "", 1000, 10, 512, 18, DataClassification.FREQUENCY_1000HZ , DataClassification.FREQUENCY_6HZ, 6);
+		//test.runSpecificConfig(RANDOMFOREST, "", 1000, 10, 256, 33, DataClassification.FREQUENCY_1000HZ , DataClassification.FREQUENCY_6HZ, 6);
 		
 		
 		

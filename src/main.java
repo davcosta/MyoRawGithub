@@ -844,6 +844,7 @@ public main(String name) {
         
 		//test.runConfigs();
         
+        //test.runSpecificConfig(RANDOMFOREST, "", 1000, 10, 512, 18, DataClassification.FREQUENCY_1000HZ , DataClassification.FREQUENCY_6HZ, 6);
 		//test.runSpecificConfig(RANDOMFOREST, "", 1000, 10, 256, 33, DataClassification.FREQUENCY_1000HZ , DataClassification.FREQUENCY_6HZ, 6);
 		
 		

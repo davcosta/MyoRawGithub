@@ -69,6 +69,10 @@ public class main extends JFrame implements KeyListener, ActionListener {
     JTextArea displayArea;
     JTextField typingArea;
     
+    private PrintWriter out;
+	private int portMobile = 5555;
+	private ServerSocket serverSocket;
+    
     
   //SERVER STUFF
     public void createSocketServer()
@@ -802,6 +806,51 @@ public void sendData(int sensor1, int sensor2, int sensor3, int sensor4, int sen
 	classGesLive.streamValues(sensor1, sensor2, sensor3, sensor4, sensor5, sensor6, sensor7, sensor8);
 }
 
+public void createSocketServerMobile()
+{
+	new Thread(new Runnable(){
+		public void run(){ 
+	
+	// TODO Auto-generated method stub
+	//createSocketServer();
+	while(true){
+			serverSocket = null;
+	
+	       try {
+	           serverSocket = new ServerSocket(portMobile);
+	       } catch (IOException e) {
+	           System.err.println("Could not listen on port: " + portMobile);
+	           //System.exit(1);
+	           break;
+	       }
+
+	       Socket clientSocket = null;
+	       try {
+	       	System.err.println("Waiting for Mobile connections to the STB.");
+	           clientSocket = serverSocket.accept();
+	       } catch (IOException e) {
+	           System.err.println("Accept failed.");
+	           //System.exit(1);
+	       }
+	       System.err.println("Connection Accepted.");
+	       //out = new PrintWriter(clientSocket.getOutputStream(),true);
+	       try {
+	    	   out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8), true);
+	    	  
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}}}).start();
+} 
+
+private void sendGestureToMobileClient(String gesture)
+{
+	if(out != null)
+	{
+		out.println(gesture);
+	}
+}
 
 
 
@@ -839,7 +888,8 @@ public main(String name) {
             }
         });*/
 		
-        test.createSocketServer();
+		//SEND DATA FROM RECOGNIZER TO ANDROID
+        //test.createSocketServer();
         
         
 		//test.runConfigs();
@@ -847,13 +897,40 @@ public main(String name) {
         //test.runSpecificConfig(RANDOMFOREST, "", 1000, 10, 512, 18, DataClassification.FREQUENCY_1000HZ , DataClassification.FREQUENCY_6HZ, 6);
 		//test.runSpecificConfig(RANDOMFOREST, "", 1000, 10, 256, 33, DataClassification.FREQUENCY_1000HZ , DataClassification.FREQUENCY_6HZ, 6);
 		
+		//CODE FOR MANUALLY SEND GESTURES
 		
-		
+		test.createSocketServerMobile();
+		String s = "";
+		while(true){
+				System.out.println("What Gesture do You want to send? (1-5)");
+				System.out.println("1) RIGHT");
+				System.out.println("2) LEFT");
+				System.out.println("3) CLICK");
+				System.out.println("4) CHANGE WINDOW");
+				try{
+				    BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+				     s = bufferRead.readLine();
+				     switch(Integer.parseInt(s))
+						{
+							case 1: test.sendGestureToMobileClient("Wave_Out");break;
+							case 2: test.sendGestureToMobileClient("Wave_In");break; 
+							case 3: test.sendGestureToMobileClient("Fist");break;
+							case 4: test.sendGestureToMobileClient("Fist");
+									test.sendGestureToMobileClient("Fist");break;
+							case 5: test.sendGestureToMobileClient("NoGesture");break;
+							default:test.sendGestureToMobileClient("NoGesture");break;
+						}
+				
+				
+					}catch(IOException e)
+					{
+						e.printStackTrace();
+					}
+		}
+	
+	
+	
 	}
-	
-	
-	
-	
 }
 
 
